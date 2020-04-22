@@ -13,7 +13,7 @@ class MyHome extends StatelessWidget {
         ),
         home: Scaffold(
             appBar: AppBar(
-              title: Text('Converter'),
+              title: Text('Convertidor'),
             ),
             body: Center(child: Converter())));
   }

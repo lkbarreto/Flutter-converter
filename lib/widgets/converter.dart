@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'binary_decimal.dart';
-import 'decimal_binary.dart';
+import 'package:provider/provider.dart';
+import 'package:demo_app/model/model.dart';
 
 class Converter extends StatefulWidget {
   @override
@@ -9,34 +8,56 @@ class Converter extends StatefulWidget {
 }
 
 class _ConverterState extends State<Converter> {
-  bool binaryDecimal = true;
-  String _binary = "";
-  String _decimal =
-      "0"; // _decimal = int.parse(_binary, radix: 2).toRadixString(10);
-
-  void _onPressed() {
-    setState(() {
-        binaryDecimal = !binaryDecimal;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-            
-              alignment: Alignment.centerLeft,
-              child: FlatButton(
-                  onPressed: () {
-                    _onPressed();
-                  },
-                  child: Text(binaryDecimal? "Bynary -> Decimal":"Decimal -> Binary" ,
-                      style: TextStyle(fontSize: 13, color: Theme.of(context).accentColor)))),
-                 Expanded(child:binaryDecimal? BinaryDecimal() : DecimalBinary())     
-          ]));
-    
+    return ChangeNotifierProvider<Model>(
+        create: (context) => Model(),
+        child: Consumer<Model>(
+          builder: (context, model, child) {
+            return Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.all(8.0),
+                        child: FlatButton(
+                          child: Text("${model.text}",
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor)),
+                          onPressed: () {
+                            model.view();
+                          },
+                        )),
+                    Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${model.binary}',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).accentColor,
+                              fontSize: 35),
+                        )),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('${model.decimal}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).accentColor,
+                                fontSize: 35))),
+                    Expanded(
+                        flex: 4,
+                        child: SizedBox(
+                          height: double.infinity,
+                          child: model.getCurrent(),
+                        )),
+                   
+                  ]),
+            );
+          },
+        ));
   }
 }
